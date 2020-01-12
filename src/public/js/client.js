@@ -74,6 +74,15 @@ var recordingStatus = document.getElementById("recordingStatus");
 var lightingMode = document.getElementById("lightingMode");
 lightingMode.addEventListener("click", changeLightingMode);
 
+var clipboard = document.getElementById("copyToClipboard");
+clipboard.addEventListener("click", copyToClipboard);
+
+function copyToClipboard() {
+    let textArea = document.getElementById("resultText");
+    textArea.select();
+    document.execCommand("copy");
+}
+
 function changeLightingMode() {
     document.body.classList.toggle("dark-mode");
     document.getElementById("startRecButton").classList.toggle("dark-mode");
