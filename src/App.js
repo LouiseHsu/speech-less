@@ -100,7 +100,6 @@ io.on('connection', function (client) {
                             fetch("https://api.aylien.com/api/v1/summarize", fetchObj)
                                 .then((response) => response.json())
                                 .then((content) => {
-                                    // process.stdout.write(JSON.stringify(content.text));
                                     client.emit('resultText', JSON.stringify(content.text));
                                 });
                         });
@@ -114,7 +113,10 @@ io.on('connection', function (client) {
         }
         recognizeStream = null;
     }
+
 });
+
+
 
 // =========================== GOOGLE CLOUD SETTINGS ================================ //
 
@@ -144,3 +146,5 @@ server.listen(port, "127.0.0.1", function () {
     // app.address = "127.0.0.1";
     console.log('Server started on port:' + port)
 });
+
+export default getCurrText;

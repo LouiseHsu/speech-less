@@ -1,5 +1,4 @@
 'use strict'
-
 const socket = io.connect();
 
 //================= CONFIG =================
@@ -87,6 +86,7 @@ function changeLightingMode() {
     document.body.classList.toggle("dark-mode");
     document.getElementById("startRecButton").classList.toggle("dark-mode");
 	document.getElementById("stopRecButton").classList.toggle("dark-mode");
+	document.getElementById("copyToClipboard").classList.toggle("dark-mode");
 	document.getElementsByClassName("resultText")[0].classList.toggle("dark-mode");
 }
 
@@ -104,7 +104,6 @@ function stopRecording() {
 	recordingStatus.style.visibility = "hidden";
 	streamStreaming = false;
 	socket.emit('endGoogleCloudStream', '');
-
 
 	let track = globalStream.getTracks()[0];
 	track.stop();
@@ -126,11 +125,11 @@ socket.on('connect', function (data) {
 });
 
 socket.on('resultText', function(data) {
+	data = data.slice(1, -1);
     document.getElementById("resultText").value += data;
 });
 
 socket.on('messages', function (data) {
-	console.log("hi");
 	console.log(data);
 });
 
