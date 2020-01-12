@@ -133,6 +133,7 @@ socket.on('connect', function (data) {
 
 
 socket.on('messages', function (data) {
+	console.log("hi");
 	console.log(data);
 });
 
@@ -192,6 +193,7 @@ socket.on('speechData', function (data) {
 function addTimeSettingsInterim(speechData) {
 	let wholeString = speechData.results[0].alternatives[0].transcript;
 	console.log(wholeString);
+	console.log("yee");
 
 	let nlpObject = nlp(wholeString).out('terms');
 
