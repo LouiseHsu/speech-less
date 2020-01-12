@@ -7,6 +7,8 @@ const environmentVars = require('dotenv').config();
 // Google Cloud
 const speech = require('@google-cloud/speech');
 const speechClient = new speech.SpeechClient(); // Creates a client
+const fetch = require("node-fetch");
+
 
 
 const app = express();
@@ -82,6 +84,22 @@ io.on('connection', function (client) {
                     process.stdout.write("HEWWO");
                     process.stdout.write(data.results[0].alternatives[0].transcript);
                     // console.log('restarted stream serverside');
+
+                    const fetchObj = {
+                        body: "sentences_number=1&title=test&text=" + data.results[0].alternatives[0].transcript,
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                            "X-Aylien-Textapi-Application-Id": "097ff773",
+                            "X-Aylien-Textapi-Application-Key": "a5687de44d5585e08b4fd26770f2df1c"
+                        },
+                        method: "POST"
+                    };
+                    
+                    fetch("https://api.aylien.com/api/v1/summarize", fetchObj)
+                        .then((response) => response.json())
+                        .then((content) => {
+                            console.log(content);
+                        });
                 }
             });
     }
