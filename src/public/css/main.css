@@ -68,50 +68,6 @@ button {
     width: 80vw;
 }
 
-#sessionSpeechData span {
-    display: inline-block;
-    margin-top: 10px;
-}
-
-/* ==========================================================================
-   Media Queries
-   ========================================================================== */
-
-/*==========  Non-Mobile First Method  ==========*/
-
-/*Above */
-
-@media only screen and (min-width: 1201px) {
-}
-
-/* Large Devices, Wide Screens */
-
-@media only screen and (max-width: 1200px) {
-}
-
-/* Medium Devices, Desktops */
-
-@media only screen and (max-width: 992px) {
-}
-
-/* Small Devices, Tablets */
-
-@media only screen and (max-width: 768px) {
-}
-
-/* Extra Small Devices, Phones */
-
-@media only screen and (max-width: 480px) {
-}
-
-/* Custom, iPhone Retina */
-
-@media only screen and (max-width: 320px) {
-}
-
-@media print, (-o-min-device-pixel-ratio: 5/4), (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
-}
-
 /* ==========================================================================
    Helper classes
    ========================================================================== */
