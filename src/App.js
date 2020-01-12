@@ -81,6 +81,14 @@ io.on('connection', function (client) {
                         },
                         method: "POST"
                     };
+
+                    fetch("https://api.aylien.com/api/v1/concepts", fetchObj)
+                        .then((response) => response.json())
+                        .then((content) => {
+                            console.log(content);
+                            client.emit('resultText', JSON.stringify(content.text));
+                        });
+
                     
                     fetch("https://api.aylien.com/api/v1/summarize", fetchObj)
                         .then((response) => response.json())
