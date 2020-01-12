@@ -169,3 +169,19 @@ button {
         opacity: 1;
     }
 }
+
+.dark-mode {
+    background-color: #25221E;
+    color: white;
+}
+
+.lightingModeButton {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    color: #666666;
+    border: none;
+    background: none;
+    font-size: 20px;
+    padding-right: 5px;
+}

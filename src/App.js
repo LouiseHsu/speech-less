@@ -116,7 +116,6 @@ io.on('connection', function (client) {
     }
 });
 
-
 // =========================== GOOGLE CLOUD SETTINGS ================================ //
 
 // The encoding of the audio file, e.g. 'LINEAR16'
