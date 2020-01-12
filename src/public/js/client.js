@@ -71,6 +71,12 @@ endButton.disabled = true;
 
 var recordingStatus = document.getElementById("recordingStatus");
 
+var lightingMode = document.getElementById("lightingMode");
+lightingMode.addEventListener("click", changeLightingMode);
+
+function changeLightingMode() {
+    document.body.classList.toggle("dark-mode");
+}
 
 function startRecording() {
 	startButton.disabled = true;
