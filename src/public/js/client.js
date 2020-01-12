@@ -24,7 +24,6 @@ const constraints = {
 //================= RECORDING =================
 
 
-
 function initRecording() {
 	socket.emit('startGoogleCloudStream', '');
 	streamStreaming = true;
@@ -103,11 +102,13 @@ function stopRecording() {
 	endButton.disabled = true;
 	recordingStatus.style.visibility = "hidden";
 	streamStreaming = false;
-	socket.emit('endGoogleCloudStream', '');
+
+	socket.emit('endGoogleCloudStream', '', function(text){
+		console.log("text: " + text);
+	});
 
 	let track = globalStream.getTracks()[0];
 	track.stop();
-
 	input.disconnect(processor);
 	processor.disconnect(context.destination);
 	context.close().then(function () {

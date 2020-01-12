@@ -36,6 +36,7 @@ app.use('/', function (req, res, next) {
 io.on('connection', function (client) {
     console.log('Client Connected to server');
     let recognizeStream = null;
+    let speechToText = "";
 
     client.on('join', function (data) {
         client.emit('messages', 'Socket Connected to Server');
@@ -49,8 +50,10 @@ io.on('connection', function (client) {
         startRecognitionStream(this, data);
     });
 
-    client.on('endGoogleCloudStream', function (data) {
-        stopRecognitionStream();
+    client.on('endGoogleCloudStream', function (data, fn) {
+        stopRecognitionStream(fn, data);
+        // console.log("FINAL: " + speechToText);
+        // fn(speechToText);
     });
 
     client.on('binaryData', function (data) {
@@ -67,49 +70,57 @@ io.on('connection', function (client) {
                 client.emit('speechData', data);
                 // send result
                 if (data.results[0] && data.results[0].isFinal) {
+                    process.stdout.write(data.results[0].alternatives[0].transcript + "\n");
+                    if (speechToText == "") {
+                        speechToText = data.results[0].alternatives[0].transcript;
+                    } else {
+                        speechToText = speechToText + " " + data.results[0].alternatives[0].transcript;
+                    }
                     stopRecognitionStream();
                     startRecognitionStream(client);
-                    process.stdout.write(data.results[0].alternatives[0].transcript);
-
-                    const fetchObj = {
-                        body: "sentences_number=1&text=" + data.results[0].alternatives[0].transcript,
-                        headers: {
-                            "Content-Type": "application/x-www-form-urlencoded",
-                            "X-Aylien-Textapi-Application-Id": "097ff773",
-                            "X-Aylien-Textapi-Application-Key": "a5687de44d5585e08b4fd26770f2df1c"
-                        },
-                        method: "POST"
-                    };
-
-                    fetch("https://api.aylien.com/api/v1/concepts", fetchObj)
-                        .then((response) => response.json())
-                        .then((content) => {
-                            let keyWord = null;
-                            try {
-                                keyWord = content["concepts"][Object.keys(content["concepts"])[0]]["surfaceForms"][0]["string"];
-                            } catch (err) {
-                                process.stdout.write("cannot find key word for title");
-                            }
-
-                            if (keyWord) {
-                                fetchObj["body"] = "title=" + keyWord + "&" + fetchObj["body"];
-                            }
-
-                            process.stdout.write(JSON.stringify(fetchObj));
-
-                            fetch("https://api.aylien.com/api/v1/summarize", fetchObj)
-                                .then((response) => response.json())
-                                .then((content) => {
-                                    client.emit('resultText', JSON.stringify(content.text));
-                                });
-                        });
                 }
             });
     }
 
-    function stopRecognitionStream() {
+    function stopRecognitionStream(fn, data) {
         if (recognizeStream) {
             recognizeStream.end();
+        }
+        if (fn) {
+            const fetchObj = {
+                body: "sentences_number=1&text=" + speechToText,
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-Aylien-Textapi-Application-Id": "097ff773",
+                    "X-Aylien-Textapi-Application-Key": "a5687de44d5585e08b4fd26770f2df1c"
+                },
+                method: "POST"
+            };
+
+            fetch("https://api.aylien.com/api/v1/concepts", fetchObj)
+                .then((response) => response.json())
+                .then((content) => {
+                    let keyWord = null;
+                    try {
+                        keyWord = content["concepts"][Object.keys(content["concepts"])[0]]["surfaceForms"][0]["string"];
+                    } catch (err) {
+                        process.stdout.write("cannot find key word for title\n");
+                    }
+
+                    if (keyWord) {
+                        fetchObj["body"] = "title=" + keyWord + "&" + fetchObj["body"];
+                    }
+
+                    process.stdout.write(JSON.stringify(fetchObj));
+
+                    fetch("https://api.aylien.com/api/v1/summarize", fetchObj)
+                        .then((response) => response.json())
+                        .then((content) => {
+                            // process.stdout.write(JSON.stringify(content.text));
+                            client.emit('resultText', JSON.stringify(content.text));
+                            speechToText = "";
+                        });
+                });
         }
         recognizeStream = null;
     }
