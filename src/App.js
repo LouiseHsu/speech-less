@@ -9,7 +9,6 @@ const speechClient = new speech.SpeechClient();
 const fetch = require("node-fetch");
 
 
-
 const app = express();
 const port = process.env.PORT || 1337;
 const server = require('http').createServer(app);
@@ -73,7 +72,7 @@ io.on('connection', function (client) {
                     process.stdout.write(data.results[0].alternatives[0].transcript);
 
                     const fetchObj = {
-                        body: "sentences_number=1&title=test&text=" + data.results[0].alternatives[0].transcript,
+                        body: "sentences_number=1&text=" + data.results[0].alternatives[0].transcript,
                         headers: {
                             "Content-Type": "application/x-www-form-urlencoded",
                             "X-Aylien-Textapi-Application-Id": "097ff773",
@@ -85,16 +84,25 @@ io.on('connection', function (client) {
                     fetch("https://api.aylien.com/api/v1/concepts", fetchObj)
                         .then((response) => response.json())
                         .then((content) => {
-                            console.log(content);
-                            client.emit('resultText', JSON.stringify(content.text));
-                        });
+                            let keyWord = null;
+                            try {
+                                keyWord = content["concepts"][Object.keys(content["concepts"])[0]]["surfaceForms"][0]["string"];
+                            } catch (err) {
+                                process.stdout.write("cannot find key word for title");
+                            }
 
-                    
-                    fetch("https://api.aylien.com/api/v1/summarize", fetchObj)
-                        .then((response) => response.json())
-                        .then((content) => {
-                            console.log(content);
-                            client.emit('resultText', JSON.stringify(content.text));
+                            if (keyWord) {
+                                fetchObj["body"] = "title=" + keyWord + "&" + fetchObj["body"];
+                            }
+
+                            process.stdout.write(JSON.stringify(fetchObj));
+
+                            fetch("https://api.aylien.com/api/v1/summarize", fetchObj)
+                                .then((response) => response.json())
+                                .then((content) => {
+                                    // process.stdout.write(JSON.stringify(content.text));
+                                    client.emit('resultText', JSON.stringify(content.text));
+                                });
                         });
                 }
             });
