@@ -120,8 +120,13 @@ io.on('connection', function (client) {
                         .then((response) => response.json())
                         .then((content1) => {
                             // console.log("CONTENT.sentence: " + content1.sentences);
+                            // console.log("CONTENT.text: " + content1.text);
                             // process.stdout.write(JSON.stringify(content.text));
-                            client.emit('resultText', JSON.stringify(content1.sentences));
+                            if (content1.sentences != "") {
+                                client.emit('resultText', JSON.stringify(content1.sentences));
+                            } else {
+                                client.emit('resultText', JSON.stringify(content1.text));
+                            }
                             speechToText = "";
                         });
                 });
