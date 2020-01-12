@@ -5,32 +5,22 @@ body {
     text-align: center;
 }
 
+h1 {
+    padding-bottom: 20px;
+    border-bottom: solid 1px lightgrey;
+    margin-bottom: 10px;
+}
+
 p {
     color: black;
-}
-
-a {
-    text-decoration: none;
-    color: #2a2a2a;
-}
-
-a:visited {
-    font-weight: normal;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-audio {
-    width: 300px;
-    height: auto;
-    backgorund-color: red;
 }
 
 button {
     height: 30px;
     border-radius: 15px;
+    margin-left: 5px;
+    margin-right: 5px;
+    cursor: pointer;
 }
 
 .wrapper {
@@ -42,20 +32,6 @@ button {
     opacity: 0.4;
 }
 
-@-webkit-keyframes redGlow {
-  from {
-    background-color: #8c190a;
-    -webkit-box-shadow: 0 0 9px #9c291a;
-  }
-  50% {
-    background-color: #9c291a;
-    -webkit-box-shadow: 0 0 18px #bdb5b4;
-  }
-  to {
-    background-color: #8c190a;
-    -webkit-box-shadow: 0 0 9px #9c291a;
-  }
-}
 #recordingStatus {
     padding: 15px;
     visibility: hidden;
@@ -79,38 +55,6 @@ button {
     margin-top: 10px;
 }
 
-.nl-Adjective {
-    background-color: #1ada47;
-    padding: 3px;
-    border-radius: 5px;
-}
-
-.nl-Noun {
-    background-color: #151ffa;
-    padding: 3px;
-    border-radius: 5px;
-    color: white;
-}
-
-.nl-Verb {
-    background-color: #ff1616;
-    padding: 3px;
-    border-radius: 5px;
-}
-
-
-.hiddenForms {
-    opacity: 0.2;
-}
-
-h1 {
-    color: #666666;
-    width: 100%;
-    border-bottom: #666666;
-    border-width: 1px;
-}
-
-
 /* ==========================================================================
    Media Queries
    ========================================================================== */
@@ -119,29 +63,36 @@ h1 {
 
 /*Above */
 
-@media only screen and (min-width: 1201px) {}
+@media only screen and (min-width: 1201px) {
+}
 
 /* Large Devices, Wide Screens */
 
-@media only screen and (max-width: 1200px) {}
+@media only screen and (max-width: 1200px) {
+}
 
 /* Medium Devices, Desktops */
 
-@media only screen and (max-width: 992px) {}
+@media only screen and (max-width: 992px) {
+}
 
 /* Small Devices, Tablets */
 
-@media only screen and (max-width: 768px) {}
+@media only screen and (max-width: 768px) {
+}
 
 /* Extra Small Devices, Phones */
 
-@media only screen and (max-width: 480px) {}
+@media only screen and (max-width: 480px) {
+}
 
 /* Custom, iPhone Retina */
 
-@media only screen and (max-width: 320px) {}
+@media only screen and (max-width: 320px) {
+}
 
-@media print, (-o-min-device-pixel-ratio: 5/4), (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {}
+@media print, (-o-min-device-pixel-ratio: 5/4), (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
+}
 
 /* ==========================================================================
    Helper classes
@@ -195,66 +146,26 @@ h1 {
     -webkit-animation-delay: 0.0s;
 }
 
-.ellipsis i+i {
+.ellipsis i + i {
     opacity: 0;
     -webkit-animation: dot 1.3s infinite;
     -webkit-animation-delay: 0.2s;
 }
 
-.ellipsis i+i+i {
+.ellipsis i + i + i {
     opacity: 0;
     -webkit-animation: dot 1.3s infinite;
     -webkit-animation-delay: 0.3s;
 }
 
 @-webkit-keyframes dot {
-    0% { opacity: 0; }
-    50% { opacity: 0; }
-    100% { opacity: 1; }
-}
-
-
-/* ==========================================================================
-   Print styles
-   ========================================================================== */
-
-@media print {
-    *, *:before, *:after {
-        background: transparent !important;
-        color: #000 !important;
-        box-shadow: none !important;
-        text-shadow: none !important;
+    0% {
+        opacity: 0;
     }
-    a, a:visited {
-        text-decoration: underline;
+    50% {
+        opacity: 0;
     }
-    a[href]:after {
-        content: " (" attr(href) ")";
-    }
-    abbr[title]:after {
-        content: " (" attr(title) ")";
-    }
-    a[href^="#"]:after, a[href^="javascript:"]:after {
-        content: "";
-    }
-    pre, blockquote {
-        border: 1px solid #999;
-        page-break-inside: avoid;
-    }
-    thead {
-        display: table-header-group;
-    }
-    tr, img {
-        page-break-inside: avoid;
-    }
-    img {
-        max-width: 100% !important;
-    }
-    p, h2, h3 {
-        orphans: 3;
-        widows: 3;
-    }
-    h2, h3 {
-        page-break-after: avoid;
+    100% {
+        opacity: 1;
     }
 }
