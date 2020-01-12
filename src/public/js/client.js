@@ -12,9 +12,7 @@ let bufferSize = 2048,
 	globalStream;
 
 //vars
-let finalWord = false,
-	resultText = document.getElementById('ResultText'),
-	removeLastSentence = true,
+let resultText = document.getElementById('ResultText'),
 	streamStreaming = false;
 
 
@@ -55,9 +53,9 @@ function initRecording() {
 }
 
 function microphoneProcess(e) {
-	var left = e.inputBuffer.getChannelData(0);
-	var left16 = downsampleBuffer(left, 44100, 16000)
-	socket.emit('binaryData', left16);
+	var buffer = e.inputBuffer.getChannelData(0);
+	var downSampledBuffer = downsampleBuffer(buffer, 44100, 16000);
+	socket.emit('binaryData', downSampledBuffer);
 }
 
 

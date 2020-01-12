@@ -55,7 +55,6 @@ io.on('connection', function (client) {
     });
 
     client.on('binaryData', function (data) {
-        // console.log(data); //log binary data
         if (recognizeStream !== null) {
             recognizeStream.write(data);
         }
@@ -67,7 +66,6 @@ io.on('connection', function (client) {
             .on('data', (data) => {
 
                 client.emit('speechData', data);
-
                 // send result
                 if (data.results[0] && data.results[0].isFinal) {
                     stopRecognitionStream();
@@ -110,7 +108,7 @@ io.on('connection', function (client) {
 // The BCP-47 language code to use, e.g. 'en-US'
 const encoding = 'LINEAR16';
 const sampleRateHertz = 16000;
-const languageCode = 'en-US'; //en-US
+const languageCode = 'en-US';
 
 const request = {
     config: {
