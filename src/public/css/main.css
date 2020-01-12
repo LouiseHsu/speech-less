@@ -16,19 +16,25 @@ p {
 }
 
 button {
+    font-family: 'Public Sans', sans-serif;
     height: 30px;
     border-radius: 15px;
     margin-left: 5px;
     margin-right: 5px;
     cursor: pointer;
+    color: #666666;
 }
 
-#startRecButton.dark-mode {
-    background-color: #666666;
-    color: #FFFFFF;
+button:disabled {
+    color: #9e9e9e;
 }
 
-#stopRecButton.dark-mode {
+/*#startRecButton.dark-mode {*/
+/*    background-color: #666666;*/
+/*    color: #FFFFFF;*/
+/*}*/
+
+button.dark-mode {
     background-color: #666666;
     color: #FFFFFF;
 }
@@ -153,17 +159,15 @@ button {
 }
 
 .resultText {
+    font-family: 'Public Sans', sans-serif;
     margin-top: 10px;
-    padding: 5px 10px;
+    padding: 10px 15px;
     border: none;
     overflow: auto;
-    outline: none;
     background-color: #f8f8f8;
     border-radius: 15px;
+    font-size: medium;
 
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
 
     resize: none; /*remove the resize handle on the bottom right*/
 }

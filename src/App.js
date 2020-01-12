@@ -128,7 +128,10 @@ io.on('connection', function (client) {
         }
         recognizeStream = null;
     }
+
 });
+
+
 
 // =========================== GOOGLE CLOUD SETTINGS ================================ //
 

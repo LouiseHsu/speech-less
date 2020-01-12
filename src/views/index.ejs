@@ -19,10 +19,10 @@
     <br>
     <button id="startRecButton" type="button" aria-label="Start Recording"> Start Recording</button>
     <button id="stopRecButton" type="button" aria-label="Stop Recording"> Stop Recording</button>
-    <div id="recordingStatus">Recording<i class="ellipsis"><i>.</i><i>.</i><i>.</i></i></div>
+    <div id="recordingStatus" aria-label="Currently Recording">Recording<i class="ellipsis"><i>.</i><i>.</i><i>.</i></i></div>
     <button id="lightingMode" type="submit" aria-label="Toggle lighting mode." class="lightingModeButton">☾</button>
     <div>
-        <textarea readonly rows="20" cols="100" id="resultText" class="resultText" aria-label="Result text box"></textarea>
+        <textarea readonly tabindex="1" rows="20" cols="100" id="resultText" class="resultText" aria-label="Result text box"></textarea>
     </div>
 
     <br>
@@ -38,6 +38,7 @@
 
 <!-- Client -->
 <script src="assets/js/client.js"></script>
+
 </body>
 
 </html>
