@@ -1,68 +1,60 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Google Cloud Speech Node with Socket Playground
 
-## Available Scripts
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-In the project directory, you can run:
+An easy-to-set-up playground for cross device real-time Google Speech Recognition with a Node server and socket.io. *Phew.*
 
-### `npm start`
+![Yo this is a test](example.gif "example gif")
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Run Local
+1. get a free test key from [Google](https://cloud.google.com/speech/docs/quickstart )
+2. place it into the src folder and update the path in the `.env` file
+3. open the terminal and go to the `src` folder
+4. run `npm install`
+5. run `node app.js` or with nodemon: `nodemon app`
+6. go to `http://127.0.0.1:1337/`
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## Run on Server
+Same as **run local** `1-4`.
 
-### `npm test`
+5. config the `.env` Port for a port that you've opened on the server. I'm using 1337 here, too.
+6. go to `your server adress`
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+I recommend using [pm2](http://pm2.keymetrics.io/) or something similar, to keep the process running even when closing the terminal connection.
 
-### `npm run build`
+## Examples
+- Speech Recognition controlled Face Filter: [Christmas Card](https://xmas.humanfoundry.com/)
+- Face Filter / Analyzer with Speech Recognition: [I Love You Trainer](http://iloveyoutrainer.com)
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Config
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+It's possible to set a recognition context / add misunderstood words for better recognition results in the app.js `request` params. For more details on the configuration, go [here](https://cloud.google.com/speech-to-text/docs/reference/rest/v1/RecognitionConfig#SpeechContext).
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+For other languages than english, look up your [language code](https://cloud.google.com/speech-to-text/docs/languages).
 
-### `npm run eject`
+## How Does the Client Process the Stream?
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Google Cloud sends intermittent responses to the uploaded audio stream. Each response
+from Google Cloud contains the current estimation of the full sentence for the streamed audio.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+When Google Cloud senses that the audio has reached an end of sentence, it will issue a response with an `isFinal` flag set to true. Once this flag is issued, the client will finalize the sentence and write it to the document.
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+This process is repeated until the user ends the recording.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Interim Natural Language Processing
 
-## Learn More
+The client application highlights different parts of speech, such as nouns and verbs, by using
+[this natural language processing library](https://github.com/spencermountain/compromise).
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Socket Connection
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+The client communicates with the server using [Socket.io](https://socket.io).
 
-### Code Splitting
+## Troubleshooting
+- If you have delays in calls, check if `IPV6` is disabled on your server
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+# Super Reduced Version for Devs
 
-### Analyzing the Bundle Size
+There is now a super reduced log only verison. It show's only two buttons, logs the results to the console and has no nlp. Use this if you want to implement it somewhere else.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+Made by [Vinzenz Aubry](https://twitter.com/vinberto)
