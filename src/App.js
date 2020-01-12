@@ -64,10 +64,14 @@ io.on('connection', function (client) {
         recognizeStream = speechClient.streamingRecognize(request)
             .on('error', console.error)
             .on('data', (data) => {
-                process.stdout.write(
-                    (data.results[0] && data.results[0].alternatives[0])
-                        ? `Transcription: ${data.results[0].alternatives[0].transcript}\n`
-                        : `\n\nReached transcription time limit, press Ctrl+C\n`);
+                // process.stdout.write(
+                //     (data.results[0] && data.results[0].alternatives[0])
+                //         ? `Transcription: ${data.results[0].alternatives[0].transcript}\n`
+                //         : `\n\nReached transcription time limit, press Ctrl+C\n`);
+                // process.stdout.write(data.results[0]);
+                // process.stdout.write(data.results[0].alternatives[0]);
+                // process.stdout.write(data.results[0].alternatives);
+
                 client.emit('speechData', data);
 
                 // if end of utterance, let's restart stream
@@ -75,6 +79,8 @@ io.on('connection', function (client) {
                 if (data.results[0] && data.results[0].isFinal) {
                     stopRecognitionStream();
                     startRecognitionStream(client);
+                    process.stdout.write("HEWWO");
+                    process.stdout.write(data.results[0].alternatives[0].transcript);
                     // console.log('restarted stream serverside');
                 }
             });
@@ -105,6 +111,7 @@ const request = {
         languageCode: languageCode,
         profanityFilter: false,
         enableWordTimeOffsets: true,
+        enableAutomaticPunctuation: true,
         // speechContexts: [{
         //     phrases: ["hoful","shwazil"]
         //    }] // add your own speech context for better recognition
