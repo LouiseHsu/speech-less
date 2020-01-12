@@ -76,6 +76,9 @@ lightingMode.addEventListener("click", changeLightingMode);
 
 function changeLightingMode() {
     document.body.classList.toggle("dark-mode");
+    document.getElementById("startRecButton").classList.toggle("dark-mode");
+	document.getElementById("stopRecButton").classList.toggle("dark-mode");
+
 }
 
 function startRecording() {

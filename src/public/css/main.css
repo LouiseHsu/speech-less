@@ -23,6 +23,24 @@ button {
     cursor: pointer;
 }
 
+#startRecButton.dark-mode {
+    background-color: #666666;
+    color: #FFFFFF;
+}
+
+#stopRecButton.dark-mode {
+    background-color: #666666;
+    color: #FFFFFF;
+}
+
+#startRecButton.dark-mode:disabled {
+    color: #888888;
+}
+
+#stopRecButton.dark-mode:disabled {
+    color: #888888;
+}
+
 .wrapper {
     width: 90vw;
     margin: 0 auto;
@@ -171,7 +189,7 @@ button {
 }
 
 .dark-mode {
-    background-color: #25221E;
+    background-color: #292929;
     color: white;
 }
 
