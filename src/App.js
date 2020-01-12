@@ -88,7 +88,7 @@ io.on('connection', function (client) {
         }
         if (fn) {
             const fetchObj = {
-                body: "sentences_number=1&text=" + speechToText,
+                body: "text=" + speechToText,
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
                     "X-Aylien-Textapi-Application-Id": "097ff773",
@@ -109,15 +109,19 @@ io.on('connection', function (client) {
 
                     if (keyWord) {
                         fetchObj["body"] = "title=" + keyWord + "&" + fetchObj["body"];
+                    } else {
+                        fetchObj["body"] = "title=&" + fetchObj["body"];
                     }
+                    fetchObj["body"] = "sentences_percentage=50&" + fetchObj["body"];
 
                     process.stdout.write(JSON.stringify(fetchObj));
 
                     fetch("https://api.aylien.com/api/v1/summarize", fetchObj)
                         .then((response) => response.json())
-                        .then((content) => {
+                        .then((content1) => {
+                            // console.log("CONTENT.sentence: " + content1.sentences);
                             // process.stdout.write(JSON.stringify(content.text));
-                            client.emit('resultText', JSON.stringify(content.text));
+                            client.emit('resultText', JSON.stringify(content1.sentences));
                             speechToText = "";
                         });
                 });
