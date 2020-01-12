@@ -12,9 +12,7 @@ let bufferSize = 2048,
 	globalStream;
 
 //vars
-let finalWord = false,
-	resultText = document.getElementById('ResultText'),
-	removeLastSentence = true,
+let resultText = document.getElementById('ResultText'),
 	streamStreaming = false;
 
 
@@ -24,10 +22,7 @@ const constraints = {
 	video: false
 };
 
-var speechToText = "";
-
 //================= RECORDING =================
-
 
 
 function initRecording() {
@@ -57,9 +52,9 @@ function initRecording() {
 }
 
 function microphoneProcess(e) {
-	var left = e.inputBuffer.getChannelData(0);
-	var left16 = downsampleBuffer(left, 44100, 16000)
-	socket.emit('binaryData', left16);
+	var buffer = e.inputBuffer.getChannelData(0);
+	var downSampledBuffer = downsampleBuffer(buffer, 44100, 16000);
+	socket.emit('binaryData', downSampledBuffer);
 }
 
 
@@ -75,6 +70,24 @@ endButton.disabled = true;
 
 var recordingStatus = document.getElementById("recordingStatus");
 
+var lightingMode = document.getElementById("lightingMode");
+lightingMode.addEventListener("click", changeLightingMode);
+
+var clipboard = document.getElementById("copyToClipboard");
+clipboard.addEventListener("click", copyToClipboard);
+
+function copyToClipboard() {
+    let textArea = document.getElementById("resultText");
+    textArea.select();
+    document.execCommand("copy");
+}
+
+function changeLightingMode() {
+    document.body.classList.toggle("dark-mode");
+    document.getElementById("startRecButton").classList.toggle("dark-mode");
+	document.getElementById("stopRecButton").classList.toggle("dark-mode");
+
+}
 
 function startRecording() {
 	startButton.disabled = true;
@@ -90,25 +103,7 @@ function stopRecording() {
 	recordingStatus.style.visibility = "hidden";
 	streamStreaming = false;
 	socket.emit('endGoogleCloudStream', '', function(text){
-		console.log("fn2 called");
-		speechToText = speechToText + text;
-		console.log("handling");
-		console.log(speechToText);
-	    const fetchObj = {
-	        body: "sentences_number=1&title=test&text=" + speechToText,
-	        headers: {
-	            "Content-Type": "application/x-www-form-urlencoded",
-	            "X-Aylien-Textapi-Application-Id": "097ff773",
-	            "X-Aylien-Textapi-Application-Key": "a5687de44d5585e08b4fd26770f2df1c"
-	        },
-	        method: "POST"
-	    };
-	    fetch("https://api.aylien.com/api/v1/summarize", fetchObj)
-	        .then((response) => response.json())
-	        .then((content) => {
-	            console.log(content);
-	            client.emit('resultText', JSON.stringify(content.text));
-	        });
+		console.log("text: " + text);
 	});
 
 	let track = globalStream.getTracks()[0];
@@ -130,11 +125,7 @@ socket.on('connect', function (data) {
 });
 
 socket.on('resultText', function(data) {
-    let header = document.createElement("header");
-    let h4 = document.createElement("h4");
-    h4.textContent = data;
-    header.appendChild(h4);
-    document.body.appendChild(header);
+    document.getElementById("resultText").value += data;
 });
 
 socket.on('messages', function (data) {
