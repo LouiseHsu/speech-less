@@ -99,6 +99,7 @@ io.on('connection', function (client) {
                         .then((response) => response.json())
                         .then((content) => {
                             console.log(content);
+                            client.emit('resultText', JSON.stringify(content.text));
                         });
                 }
             });

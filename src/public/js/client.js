@@ -131,6 +131,13 @@ socket.on('connect', function (data) {
 	socket.emit('join', 'Server Connected to Client');
 });
 
+socket.on('resultText', function(data) {
+    let header = document.createElement("header");
+    let h4 = document.createElement("h4");
+    h4.textContent = data;
+    header.appendChild(h4);
+    document.body.appendChild(header);
+});
 
 socket.on('messages', function (data) {
 	console.log("hi");
