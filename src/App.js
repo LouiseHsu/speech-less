@@ -37,6 +37,7 @@ app.use('/', function (req, res, next) {
 io.on('connection', function (client) {
     console.log('Client Connected to server');
     let recognizeStream = null;
+    let speechToText = "";
 
     client.on('join', function (data) {
         client.emit('messages', 'Socket Connected to Server');
@@ -50,8 +51,10 @@ io.on('connection', function (client) {
         startRecognitionStream(this, data);
     });
 
-    client.on('endGoogleCloudStream', function (data) {
-        stopRecognitionStream();
+    client.on('endGoogleCloudStream', function (data, fn) {
+        stopRecognitionStream(fn, data);
+        // console.log("FINAL: " + speechToText);
+        // fn(speechToText);
     });
 
     client.on('binaryData', function (data) {
@@ -70,33 +73,27 @@ io.on('connection', function (client) {
 
                 // send result
                 if (data.results[0] && data.results[0].isFinal) {
+                    process.stdout.write(data.results[0].alternatives[0].transcript + "\n");
+                    // fn(data.results[0].alternatives[0].transcript);
+                    if (speechToText == "") {
+                        speechToText = data.results[0].alternatives[0].transcript;
+                    } else {
+                        speechToText = speechToText + " " + data.results[0].alternatives[0].transcript;
+                    }
+
+                    console.log("current: " + speechToText);
                     stopRecognitionStream();
                     startRecognitionStream(client);
-                    process.stdout.write(data.results[0].alternatives[0].transcript);
-
-                    const fetchObj = {
-                        body: "sentences_number=1&title=test&text=" + data.results[0].alternatives[0].transcript,
-                        headers: {
-                            "Content-Type": "application/x-www-form-urlencoded",
-                            "X-Aylien-Textapi-Application-Id": "097ff773",
-                            "X-Aylien-Textapi-Application-Key": "a5687de44d5585e08b4fd26770f2df1c"
-                        },
-                        method: "POST"
-                    };
-                    
-                    fetch("https://api.aylien.com/api/v1/summarize", fetchObj)
-                        .then((response) => response.json())
-                        .then((content) => {
-                            console.log(content);
-                            client.emit('resultText', JSON.stringify(content.text));
-                        });
                 }
             });
     }
 
-    function stopRecognitionStream() {
+    function stopRecognitionStream(fn, data) {
         if (recognizeStream) {
             recognizeStream.end();
+        }
+        if (fn) {
+            fn(speechToText);
         }
         recognizeStream = null;
     }

@@ -24,6 +24,8 @@ const constraints = {
 	video: false
 };
 
+var speechToText = "";
+
 //================= RECORDING =================
 
 
@@ -87,12 +89,30 @@ function stopRecording() {
 	endButton.disabled = true;
 	recordingStatus.style.visibility = "hidden";
 	streamStreaming = false;
-	socket.emit('endGoogleCloudStream', '');
-
+	socket.emit('endGoogleCloudStream', '', function(text){
+		console.log("fn2 called");
+		speechToText = speechToText + text;
+		console.log("handling");
+		console.log(speechToText);
+	    const fetchObj = {
+	        body: "sentences_number=1&title=test&text=" + speechToText,
+	        headers: {
+	            "Content-Type": "application/x-www-form-urlencoded",
+	            "X-Aylien-Textapi-Application-Id": "097ff773",
+	            "X-Aylien-Textapi-Application-Key": "a5687de44d5585e08b4fd26770f2df1c"
+	        },
+	        method: "POST"
+	    };
+	    fetch("https://api.aylien.com/api/v1/summarize", fetchObj)
+	        .then((response) => response.json())
+	        .then((content) => {
+	            console.log(content);
+	            client.emit('resultText', JSON.stringify(content.text));
+	        });
+	});
 
 	let track = globalStream.getTracks()[0];
 	track.stop();
-
 	input.disconnect(processor);
 	processor.disconnect(context.destination);
 	context.close().then(function () {
