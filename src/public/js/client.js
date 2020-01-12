@@ -114,11 +114,7 @@ socket.on('connect', function (data) {
 });
 
 socket.on('resultText', function(data) {
-    let header = document.createElement("header");
-    let h4 = document.createElement("h4");
-    h4.textContent = data;
-    header.appendChild(h4);
-    document.body.appendChild(header);
+    document.getElementById("resultText").value += data;
 });
 
 socket.on('messages', function (data) {

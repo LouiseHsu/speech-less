@@ -185,3 +185,7 @@ button {
     font-size: 20px;
     padding-right: 5px;
 }
+
+.resultText {
+    padding: 5px 10px;
+}
