@@ -86,7 +86,7 @@ function changeLightingMode() {
     document.body.classList.toggle("dark-mode");
     document.getElementById("startRecButton").classList.toggle("dark-mode");
 	document.getElementById("stopRecButton").classList.toggle("dark-mode");
-
+	document.getElementsByClassName("resultText")[0].classList.toggle("dark-mode");
 }
 
 function startRecording() {
