@@ -157,5 +157,3 @@ server.listen(port, "127.0.0.1", function () {
     // app.address = "127.0.0.1";
     console.log('Server started on port:' + port)
 });
-
-export default getCurrText;
