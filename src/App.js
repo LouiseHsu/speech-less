@@ -76,7 +76,7 @@ io.on('connection', function (client) {
                     } else {
                         speechToText = speechToText + " " + data.results[0].alternatives[0].transcript;
                     }
-                    stopRecognitionStream();
+                    stopRecognitionStream(true, speechToText);
                     startRecognitionStream(client);
                 }
             });
@@ -88,7 +88,7 @@ io.on('connection', function (client) {
         }
         if (fn) {
             const fetchObj = {
-                body: "text=" + speechToText,
+                body: "text=" + data,
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
                     "X-Aylien-Textapi-Application-Id": "097ff773",
