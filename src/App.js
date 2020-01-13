@@ -1,27 +1,40 @@
-'use strict'
+'use strict';
 
 const express = require('express');
-const environmentVars = require('dotenv').config(); // ?
+const environmentVars = require('dotenv').config();
 
-// Google Cloud
+// Google Cloud Speech Settings
 const speech = require('@google-cloud/speech');
 const speechClient = new speech.SpeechClient();
 const fetch = require("node-fetch");
-
+const request = {
+    config: {
+        encoding: 'LINEAR16',
+        sampleRateHertz: 16000,
+        languageCode: 'en-US',
+        profanityFilter: false,
+        enableWordTimeOffsets: true,
+        enableAutomaticPunctuation: true,
+    },
+    interimResults: false
+};
 
 const app = express();
-const port = process.env.PORT || 1337;
+const port = process.env.PORT || 3000;
 const server = require('http').createServer(app);
-
 const io = require('socket.io')(server);
 
 app.use('/assets', express.static(__dirname + '/public'));
 app.use('/session/assets', express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 
+// start server
+server.listen(port, "127.0.0.1", function () {
+    console.log('Server started on port:' + port)
+});
 
-// =========================== ROUTERS ================================ //
 
+// routers
 app.get('/', function (req, res) {
     res.render('index', {});
 });
@@ -31,8 +44,7 @@ app.use('/', function (req, res, next) {
 });
 
 
-// =========================== SOCKET.IO ================================ //
-
+// socket.io
 io.on('connection', function (client) {
     console.log('Client Connected to server');
     let recognizeStream = null;
@@ -52,8 +64,6 @@ io.on('connection', function (client) {
 
     client.on('endGoogleCloudStream', function (data, fn) {
         stopRecognitionStream(fn, data);
-        // console.log("FINAL: " + speechToText);
-        // fn(speechToText);
     });
 
     client.on('binaryData', function (data) {
@@ -70,7 +80,6 @@ io.on('connection', function (client) {
                 client.emit('speechData', data);
                 // send result
                 if (data.results[0] && data.results[0].isFinal) {
-                    process.stdout.write(data.results[0].alternatives[0].transcript + "\n");
                     if (speechToText == "") {
                         speechToText = data.results[0].alternatives[0].transcript;
                     } else {
@@ -114,14 +123,9 @@ io.on('connection', function (client) {
                     }
                     fetchObj["body"] = "sentences_percentage=50&" + fetchObj["body"];
 
-                    process.stdout.write(JSON.stringify(fetchObj));
-
                     fetch("https://api.aylien.com/api/v1/summarize", fetchObj)
                         .then((response) => response.json())
                         .then((content1) => {
-                            // console.log("CONTENT.sentence: " + content1.sentences);
-                            // console.log("CONTENT.text: " + content1.text);
-                            // process.stdout.write(JSON.stringify(content.text));
                             if (content1.sentences != "") {
                                 client.emit('resultText', JSON.stringify(content1.sentences));
                             } else {
@@ -134,35 +138,4 @@ io.on('connection', function (client) {
         recognizeStream = null;
     }
 
-});
-
-
-
-// =========================== GOOGLE CLOUD SETTINGS ================================ //
-
-// The encoding of the audio file, e.g. 'LINEAR16'
-// The sample rate of the audio file in hertz, e.g. 16000
-// The BCP-47 language code to use, e.g. 'en-US'
-const encoding = 'LINEAR16';
-const sampleRateHertz = 16000;
-const languageCode = 'en-US';
-
-const request = {
-    config: {
-        encoding: encoding,
-        sampleRateHertz: sampleRateHertz,
-        languageCode: languageCode,
-        profanityFilter: false,
-        enableWordTimeOffsets: true,
-        enableAutomaticPunctuation: true,
-    },
-    interimResults: false
-};
-
-
-// =========================== START SERVER ================================ //
-
-server.listen(port, "127.0.0.1", function () {
-    // app.address = "127.0.0.1";
-    console.log('Server started on port:' + port)
 });

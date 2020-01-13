@@ -1,7 +1,6 @@
-'use strict'
+'use strict';
 const socket = io.connect();
 
-//================= CONFIG =================
 // Stream Audio
 let bufferSize = 2048,
 	AudioContext,
@@ -10,20 +9,10 @@ let bufferSize = 2048,
 	input,
 	globalStream;
 
-//vars
 let resultText = document.getElementById('ResultText'),
 	streamStreaming = false;
 
-
-//audioStream constraints
-const constraints = {
-	audio: true,
-	video: false
-};
-
-//================= RECORDING =================
-
-
+// record speech
 function initRecording() {
 	socket.emit('startGoogleCloudStream', '');
 	streamStreaming = true;
@@ -45,7 +34,7 @@ function initRecording() {
 		};
 	};
 
-	navigator.mediaDevices.getUserMedia(constraints)
+	navigator.mediaDevices.getUserMedia({audio: true, video: false})
 		.then(handleSuccess);
 
 }
@@ -59,7 +48,7 @@ function microphoneProcess(e) {
 
 
 
-//================= INTERFACE =================
+// ui
 var startButton = document.getElementById("startRecButton");
 startButton.addEventListener("click", startRecording);
 
@@ -120,7 +109,7 @@ function stopRecording() {
 	});
 }
 
-//================= SOCKET IO =================
+// socket.io
 socket.on('connect', function (data) {
 	socket.emit('join', 'Server Connected to Client');
 });
@@ -138,6 +127,7 @@ window.onbeforeunload = function () {
 	if (streamStreaming) { socket.emit('endGoogleCloudStream', ''); }
 };
 
+// downsample buffer
 var downsampleBuffer = function (buffer, sampleRate, outSampleRate) {
 	if (outSampleRate == sampleRate) {
 		return buffer;
